@@ -57,30 +57,83 @@ window.books = [
  Create and return the HTML to render a single book.
  The `book` parameter is an object representing a single book. 
 */
-function renderBook(book) {}
+function renderBook(book) {
+  const {title, authors, description, price, rating, quantity} = book;
+  let totalPrice = book.quanity * book.price;
+
+  const content = `
+    <div class="book">
+      <div class="details">
+        ${title}
+        <span class="rating">(${rating} stars)</span>
+      </div>
+      <div class="authors">by ${authors}</div>
+      <div class="description">
+        ${description}
+      </div>
+      <button class="removeBtn">Remove from cart</button>
+    </div>
+    <div class="quantity">${quantity} @ ${price}</div>
+    <div class="price">${totalPrice}</div>
+    </div>
+    `;
+  
+  return content;
+}
 
 /*
   Calculate and return the total price of all items in the cart.
  */
-function calculateTotal() {}
+function calculateTotal() {
+  let total = 0;
+  books.map((book) => {
+    total += (book.quantity * book.price);
+  });
+
+  return total;
+}
 
 /*
   Render the array of books and the cart total and insert them on the DOM.
   The books should be rendered in the `section` with id "cartItems".
   The total should be rendered in the `section` with id "cartTotal".
 */
-function render() {}
+function render() {
+  const renderItems = document.querySelector("#cartItems");
+  const renderTotal = document.querySelector(".total-price");
+  renderItems.innerHTML = " ";
+
+  if(books.length === 0) {
+    renderItems.innerText = "Nothing in cart";
+    renderTotal.innerText = "$0";
+  } else {
+    const content = books.map(renderBook).join(" ");
+    renderItems.innerHTML = content;
+    renderTotal.innerHTML = " ";
+    renderTotal.innerHTML = `$${calculateTotal()}`;
+  }
+}
 
 /*
   Sort the books array by price in ascending order then call render()
 */
-function sortByPrice() {}
+function sortByPrice() {
+  books = books.sort((bookA, bookB) => (bookA.price > bookB.price ? 1 : -1));
+  render();
+}
 
 /*
   Perform all startup tasks here. Use this function to attach the required event listeners
   then call render()
 */
-function main() {}
+function main() {
+  sortBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    sortByPrice();
+  });
+
+  render();
+}
 
 window.addEventListener("DOMContentLoaded", main);
 
